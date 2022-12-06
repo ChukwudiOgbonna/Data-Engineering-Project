@@ -11,3 +11,5 @@ learn-terraform-docker-container/*
 !learn-terraform-docker-container/main.tf
 
 airflow/.env
+airflow/logs
+airflow/plugins
