@@ -51,7 +51,6 @@ def ingest():
     df.head(0)
 
 
-
     # create postgres column names from datafrae column names
     df.head(0).to_sql(name=table_name,con=engine,if_exists='replace')
 

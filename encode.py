@@ -55,3 +55,4 @@ if __name__ == '__main__':
     mL=  Solution()
     z=mL.decode(p)
     print(z)
+

@@ -1,12 +1,13 @@
 ny_taxi_postgres_data/*
 pgadmin_data/*
-aws/credentials/*
+aws/*
+
 
 learn-terraform-aws-instance/*
 !learn-terraform-aws-instance/main.tf 
-!learn-terraform-aws-instance/variables.tf
+
 
 learn-terraform-docker-container/*
 !learn-terraform-docker-container/main.tf
 
-
+airflow/.env
