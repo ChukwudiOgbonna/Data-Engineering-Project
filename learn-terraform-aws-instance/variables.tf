@@ -8,3 +8,15 @@ variable "region" {
   type        = string
   default     = "us-east-1"
 }
+variable "glue_database_name" {
+  description = "Name of our glue database to create"
+  type = string
+  default = "nyc-trips"
+  
+}
+variable "catalog_id" {
+  description = "Glue data catalog ID"
+  type = string
+  default = "004743222442"
+  
+}

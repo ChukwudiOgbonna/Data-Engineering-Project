@@ -17,18 +17,15 @@ terraform {
 
 provider "aws" {
   region = var.region
-}
-
-resource "aws_instance" "app_server" {
-  ami           = "ami-0149b2da6ceec4bb0"
-  instance_type = "t2.micro"
- 
-  tags = {
-   Name = var.instance_name
+  assume_role {
+    
   }
 }
-resource "aws_s3_bucket" "b" {
-  bucket = "chuks-bucket-12"
+
+
+# contains our source data
+resource "aws_s3_bucket" "source" {
+  bucket = "chuks-s3-bucket-123"
 
   tags = {
     Name        = "chuks"
@@ -36,4 +33,62 @@ resource "aws_s3_bucket" "b" {
   }
 }
 
+# fetch crawler iam role, with policies from aws account
+data "aws_iam_role" "crawler" {
+  name = "AWSGlueServiceRole-gluee"
+}
+# create a glue data catalog database
+resource "aws_glue_catalog_database" "db" {
+  name=var.glue_database_name
+  
+}
+# glue crawler to get information, schema and location from s3 bucket and put in glue database
+resource "aws_glue_crawler" "example" {
+  database_name = aws_glue_catalog_database.db.name
+  name          = "chuks-crawler"
+  role          = data.aws_iam_role.crawler.arn
+  depends_on = [
+    aws_glue_catalog_database.db, aws_s3_bucket.source, data.aws_iam_role.crawler
+  ]
+
+  s3_target {
+    path = "s3://chuks-test-bucket-12/"
+  }
+}
+
+
+# type of data catalog we are using for athena - GLUE
+resource "aws_athena_data_catalog" "example" {
+  name        = "AthenaDataCatalog"
+  description = "Glue based Data Catalog"
+  type        = "GLUE"
+
+  parameters = {
+    "catalog-id" = var.catalog_id
+  }
+}
+
+
+# bucket to store query results
+resource "aws_s3_bucket" "results" {
+  bucket = "results-stored"
+}
+
+#athena workgroup
+resource "aws_athena_workgroup" "Data" {
+  name       = "data"
+  depends_on = [aws_s3_bucket.results]
+  configuration {
+    enforce_workgroup_configuration    = false
+    publish_cloudwatch_metrics_enabled = true
+
+    result_configuration {
+      output_location = "s3://${aws_s3_bucket.results.bucket}/"
+
+      encryption_configuration {
+        encryption_option = "SSE_S3"
+      }
+    }
+  }
+}
 
