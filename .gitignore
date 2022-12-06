@@ -8,5 +8,5 @@ learn-terraform-aws-instance/*
 
 
 airflow/.env
-airflow/logs
-airflow/plugins
+airflow/logs/
+airflow/plugins/
