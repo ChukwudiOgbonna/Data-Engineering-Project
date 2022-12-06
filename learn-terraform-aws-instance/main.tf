@@ -47,9 +47,7 @@ resource "aws_glue_crawler" "example" {
   database_name = aws_glue_catalog_database.db.name
   name          = "chuks-crawler"
   role          = data.aws_iam_role.crawler.arn
-  depends_on = [
-    aws_glue_catalog_database.db, aws_s3_bucket.source, data.aws_iam_role.crawler
-  ]
+  
 
   s3_target {
     path = "s3://chuks-test-bucket-12/"
