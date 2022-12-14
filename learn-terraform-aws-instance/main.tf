@@ -17,9 +17,6 @@ terraform {
 
 provider "aws" {
   region = var.region
-  assume_role {
-    
-  }
 }
 
 
@@ -47,10 +44,14 @@ resource "aws_glue_crawler" "example" {
   database_name = aws_glue_catalog_database.db.name
   name          = "chuks-crawler"
   role          = data.aws_iam_role.crawler.arn
-  
 
+  # this invokes a local executable after crawler is created, invokes the command using local machine, this starts the crawler
+  provisioner "local-exec" {
+    command = "aws glue start-crawler --name ${self.name}"
+  }
+  
   s3_target {
-    path = "s3://chuks-test-bucket-12/"
+    path = aws_s3_bucket.source.bucket
   }
 }
 
@@ -65,6 +66,7 @@ resource "aws_athena_data_catalog" "example" {
     "catalog-id" = var.catalog_id
   }
 }
+
 
 
 # bucket to store query results

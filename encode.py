@@ -51,7 +51,7 @@ class Solution:
 
 if __name__ == '__main__':
     strs=["name","chuks","data"]
-    p="3#day6##mon#h4#year"
+    p="4#days6##mon#h4#year"
     mL=  Solution()
     z=mL.decode(p)
     print(z)
